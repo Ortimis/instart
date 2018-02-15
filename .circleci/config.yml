@@ -8,15 +8,14 @@ jobs:
   build-job:
     docker:
       - image: circleci/node:9.5.0-stretch
-    working_directory: 
     steps:
+      - checkout
       - run: npm install
       - run: npm run build
 
   deploy-job:
     docker:
       - image: circleci/node:9.5.0-stretch
-    working_directory: 
     steps:
       - run:
           name: Deploy Master to Firebase
