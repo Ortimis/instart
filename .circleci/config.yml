@@ -10,6 +10,7 @@ jobs:
       - image: circleci/node:9.5.0-stretch
     steps:
       - checkout
+      
       - run: npm install
       - run: npm run build
 
@@ -19,7 +20,7 @@ jobs:
     steps:
       - run:
           name: Deploy Master to Firebase
-          command: firebase deploy --token=$FIREBASE_DEPLOY_TOKEN
+          command: ./node_modules/.bin/firebase deploy --token=$FIREBASE_DEPLOY_TOKEN
                
 workflows:
   version: 2
