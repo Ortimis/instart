@@ -27,7 +27,10 @@ workflows:
   
   -deploy:
     jobs:
-      - build-job
+      - build-job:
+          filters:
+            branches:
+              only: stage
       - deploy-job:
           requires:
             - build-job
