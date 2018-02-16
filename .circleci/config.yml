@@ -47,8 +47,6 @@ workflows:
             branches:
               only: stage
       - deploy-job:
-          requires:
-            - build-job
           filters:
             branches:
               only: master 
