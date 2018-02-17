@@ -32,5 +32,9 @@ export default function configureStore (initialState, history) {
     })
   }
 
+/*   store.firebaseAuthIsReady.then(() => {
+    console.log('Auth has loaded') // eslint-disable-line no-console
+  }) */
+
   return store
 }
