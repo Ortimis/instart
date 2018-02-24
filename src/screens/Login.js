@@ -1,44 +1,63 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { compose } from 'redux'
+
 import { connect } from 'react-redux'
-import { firebaseConnect, isLoaded, isEmpty, firebase } from 'react-redux-firebase'
+
+import { withHandlers, pure, compose } from 'recompose'
+import { withNotifications } from 'redux-firestore'
+
+import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase'
 
 import App from 'grommet/components/App'
 
-class Login extends Component {
-    render() {
-        return(
-            <App className="App">
-                <h1>LOGIN</h1>
-                <button // <GoogleButton/> button can be used instead
-                    onClick={() => this.props.firebase.login({ provider: 'google', type: 'popup' })}
-                >Login With Google</button>
-                <button // <GoogleButton/> button can be used instead
-                    onClick={() => this.props.firebase.logout()}
-                >Logout</button>
-                <div>
-                    <h2>Auth state</h2>
-                    {
-                        isLoaded(this.props.firebase.profile) 
-                        ? <p>this.props.firebase.profile.isEmpty = true</p>
-                        : <p>Profile has loaded</p> 
-                    }
-{/*                     isLoaded(this.props.firebase.auth)
-                    ? <span>Loading...</span>
-                    : isEmpty(this.props.firebase.auth)
-                        ? <span>Not Authed</span>
-: <pre>{JSON.stringify(this.props.firebase.auth, null, 2)}</pre> */ }
-                </div>
-            </App>
-        )
-    }
-}
+export const Login = ({ emailLogin, googleLogin, onSubmitFail }) => (
+    <App className="App">
+        <h1>LOGIN</h1>
+        <button // <GoogleButton/> button can be used instead
+            onClick={googleLogin}
+        >Login With Google</button>
+        <button // <GoogleButton/> button can be used instead
+            onClick={() => this.props.firebase.logout()}
+        >Logout</button>
+        <div>
+            <h2>Auth state</h2>
+            Auth is
+        </div>
+    </App>
+)
 
+Login.propTypes = {
+    firebase: PropTypes.shape({
+      // eslint-disable-line react/no-unused-prop-types
+      login: PropTypes.func.isRequired
+    }),
+    emailLogin: PropTypes.func,
+    onSubmitFail: PropTypes.func,
+    googleLogin: PropTypes.func
+  }
 
 export default compose(
+    // UserIsNotAuthenticated, // redirect to list page if logged in
+    //pure,
+    //withNotifications, // add props.showError
+    withHandlers({
+        pure,
+        withNotifications,
+
+        onSubmitFail: props => (formErrs, dispatch, err) =>
+            props.showError(formErrs ? 'Form Invalid' : err.message || 'Error'),
+
+        googleLogin: ({ firebase, showError }) => e =>
+            firebase
+                .login({ provider: 'google', type: 'popup' })
+                .catch(err => showError(err.message)),
+        emailLogin: ({ firebase }) => creds => firebase.login(creds)
+    })
+)(Login)
+
+/* export default compose(
     firebaseConnect(),
     connect( ({firebase: { auth } }) => (
         { auth }
     ))
-)(Login)
+)(Login) */

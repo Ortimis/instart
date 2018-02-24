@@ -13,7 +13,7 @@ export default () => (
   <Provider store={store}>
     <BrowserRouter>
       <Switch>
-        <Route path="/home" component={Home} />
+        <Route exact path="/" component={Home} />
         <Route path="/login" component={Login} />
       </Switch>
     </BrowserRouter> 
